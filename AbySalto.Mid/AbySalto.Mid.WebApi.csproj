@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-
+    <ProjectReference Include="..\AbySalto.Mid.Infrastructure\AbySalto.Mid.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
