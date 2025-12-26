@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-namespace AbySalto.Mid.Application
+
+namespace AbySalto.Mid.Application;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services)
-        {
-            return services;
-        }
+        return services;
     }
 }

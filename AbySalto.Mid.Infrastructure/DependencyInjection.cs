@@ -1,5 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AbySalto.Mid.Application.Services;
+using AbySalto.Mid.Application.Services.External;
+using AbySalto.Mid.Infrastructure.Configuration;
+using AbySalto.Mid.Infrastructure.Services;
+using AbySalto.Mid.Infrastructure.Services.External;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace AbySalto.Mid.Infrastructure
 {
@@ -7,11 +15,37 @@ namespace AbySalto.Mid.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddServices(configuration);
+            services.AddImplementations();
             return services;
         }
 
-        private static IServiceCollection AddServices(this IServiceCollection services)
+        private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
+            // Bind config
+            services.Configure<ExternalApisSettings>(configuration.GetSection(ExternalApisSettings.SectionName));
+
+            services.AddSingleton(new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true
+            });
+
+            services.AddHttpClient<IDummyJsonApiClient, DummyJsonApiClient>((sp, client) =>
+            {
+                var options = sp.GetRequiredService<IOptions<ExternalApisSettings>>().Value;
+
+                client.BaseAddress = new Uri(options.BaseUrl);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            });
+
+            return services;
+        }
+
+        private static IServiceCollection AddImplementations(this IServiceCollection services)
+        {
+            services.AddScoped<IProductService, ProductService>();
+
             return services;
         }
 
