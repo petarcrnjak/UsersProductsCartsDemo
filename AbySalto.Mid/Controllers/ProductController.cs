@@ -1,4 +1,6 @@
-﻿using AbySalto.Mid.Application.Services;
+﻿using AbySalto.Mid.Application.Common.Exceptions;
+using AbySalto.Mid.Application.Favorites;
+using AbySalto.Mid.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AbySalto.Mid.Controllers;
@@ -8,10 +10,12 @@ namespace AbySalto.Mid.Controllers;
 public class ProductController : ControllerBase
 {
     private readonly IProductService _productService;
+    private readonly IFavoriteService _favoriteService;
 
-    public ProductController(IProductService productService)
+    public ProductController(IProductService productService, IFavoriteService favoriteService)
     {
         _productService = productService;
+        _favoriteService = favoriteService;
     }
 
     [HttpGet]
@@ -27,5 +31,20 @@ public class ProductController : ControllerBase
     {
         var product = await _productService.GetProductByIdAsync(id);
         return product is null ? NotFound() : Ok(product);
+    }
+
+    [HttpPost("{id:int}/favorite")]
+    public async Task<IActionResult> AddToFavorites(int id)
+    {
+        var cmd = new AddFavoriteCommand(id);
+        try
+        {
+            var result = await _favoriteService.AddFavoriteAsync(cmd);
+            return CreatedAtAction(nameof(GetProductById), new { id = result.ProductId }, result);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
     }
 }

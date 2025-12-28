@@ -7,7 +7,7 @@ public static class ProductMapper
     public static ProductDto ToDto(this ProductResponse src)
     {
         if (src is null)
-            return null!; // caller should handle nulls; keep signature simple
+            return null!;
 
         return new ProductDto(
             src.Id,

@@ -1,6 +1,6 @@
 namespace AbySalto.Mid.Infrastructure.Configuration;
 
-public class ExternalApisSettings
+public sealed class ExternalApisSettings
 {
     public const string SectionName = "ExternalApis";
 

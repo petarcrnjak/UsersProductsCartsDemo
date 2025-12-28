@@ -1,8 +1,12 @@
-﻿using AbySalto.Mid.Application.Services;
+﻿using AbySalto.Mid.Application.Favorites;
+using AbySalto.Mid.Application.Services;
 using AbySalto.Mid.Application.Services.External;
 using AbySalto.Mid.Infrastructure.Configuration;
+using AbySalto.Mid.Infrastructure.Persistence;
+using AbySalto.Mid.Infrastructure.Repositories;
 using AbySalto.Mid.Infrastructure.Services;
 using AbySalto.Mid.Infrastructure.Services.External;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -17,6 +21,7 @@ namespace AbySalto.Mid.Infrastructure
         {
             services.AddServices(configuration);
             services.AddImplementations();
+            services.AddDatabase(configuration);
             return services;
         }
 
@@ -45,12 +50,25 @@ namespace AbySalto.Mid.Infrastructure
         private static IServiceCollection AddImplementations(this IServiceCollection services)
         {
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IFavoriteService, FavoriteService>();
+            services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 
             return services;
         }
 
         private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
+            // Bind Database settings (optional)
+            services.Configure<DatabaseSettings>(configuration.GetSection(DatabaseSettings.SectionName));
+
+            services.AddDbContext<AppDbContext>((sp, options) =>
+            {
+                var dbSettings = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
+                var connectionString = dbSettings.DefaultConnection ?? configuration.GetConnectionString("DefaultConnection");
+
+                options.UseSqlServer(connectionString);
+            });
+
             return services;
         }
     }
