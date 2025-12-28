@@ -1,6 +1,7 @@
 
 using AbySalto.Mid.Application;
 using AbySalto.Mid.Infrastructure;
+using AbySalto.Mid.Middleware;
 
 namespace AbySalto.Mid
 {
@@ -33,6 +34,9 @@ namespace AbySalto.Mid
 
             app.UseHttpsRedirection();
 
+            app.UseMiddleware<GlobalExceptionHandler>();
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

@@ -1,12 +1,14 @@
 ﻿using AbySalto.Mid.Application.Common.Exceptions;
 using AbySalto.Mid.Application.Favorites;
 using AbySalto.Mid.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AbySalto.Mid.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ProductController : ControllerBase
 {
     private readonly IProductService _productService;
