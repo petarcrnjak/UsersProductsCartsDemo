@@ -15,10 +15,10 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Email).HasMaxLength(255).IsRequired();
         builder.Property(u => u.PasswordHash).IsRequired();
 
-        // One-to-many: User -> Carts
-        builder.HasMany(u => u.Carts)
+        // One-to-one: User -> Cart
+        builder.HasOne(u => u.Cart)
                .WithOne(c => c.User)
-               .HasForeignKey(c => c.UserId)
+               .HasForeignKey<Cart>(c => c.UserId)
                .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(u => u.Favorites)

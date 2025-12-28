@@ -1,9 +1,10 @@
 using AbySalto.Mid.Application.Common.Exceptions;
 using AbySalto.Mid.Application.Favorites;
 using AbySalto.Mid.Application.Favorites.Mapper;
+using AbySalto.Mid.Application.Services;
 using AbySalto.Mid.Domain.Entities;
 
-namespace AbySalto.Mid.Application.Services;
+namespace AbySalto.Mid.Infrastructure.Services;
 
 public sealed class FavoriteService : IFavoriteService
 {

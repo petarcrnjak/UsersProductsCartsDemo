@@ -1,6 +1,7 @@
 ﻿using AbySalto.Mid.Application.Auth;
 using AbySalto.Mid.Application.Auth.Authentification;
 using AbySalto.Mid.Application.Auth.Interfaces;
+using AbySalto.Mid.Application.Carts;
 using AbySalto.Mid.Application.Favorites;
 using AbySalto.Mid.Application.Services;
 using AbySalto.Mid.Application.Services.External;
@@ -57,11 +58,16 @@ namespace AbySalto.Mid.Infrastructure
 
         private static IServiceCollection AddImplementations(this IServiceCollection services)
         {
+            // Make HttpContext accessible from infrastructure services
+            services.AddHttpContextAccessor();
+            // Current user abstraction
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
             // Application services
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IFavoriteService, FavoriteService>();
-            //services.AddScoped<ICartService, CartService>();
+            services.AddScoped<ICartService, CartService>();
 
             // Infrastructure services
             services.AddScoped<ITokenProvider, TokenProvider>();
@@ -70,7 +76,7 @@ namespace AbySalto.Mid.Infrastructure
             // Repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IFavoriteRepository, FavoriteRepository>();
-            //services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
 
             return services;
         }

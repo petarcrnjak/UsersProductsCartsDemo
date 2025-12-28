@@ -8,17 +8,18 @@ public sealed class User
     public string PasswordHash { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public ICollection<Cart> Carts { get; set; } = new List<Cart>();
+    // One cart per user
+    public Cart? Cart { get; set; }
 
     public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
 
     private User() { }
 
-    public User(string username, string email, string paswordHash, DateTime createdAt)
+    public User(string username, string email, string passwordHash, DateTime createdAt)
     {
         Username = username;
         Email = email;
-        PasswordHash = paswordHash;
+        PasswordHash = passwordHash;
         CreatedAt = createdAt;
     }
 }

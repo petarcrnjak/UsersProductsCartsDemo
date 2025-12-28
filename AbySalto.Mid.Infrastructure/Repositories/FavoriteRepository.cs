@@ -24,6 +24,7 @@ internal sealed class FavoriteRepository : IFavoriteRepository
     public async Task<IEnumerable<Favorite>> GetByUserIdAsync(int userId, CancellationToken cancellation = default)
     {
         return await _context.Favorites
+            .AsNoTracking()
             .Where(f => f.UserId == userId)
             .OrderByDescending(f => f.AddedAt)
             .ToListAsync(cancellation);
