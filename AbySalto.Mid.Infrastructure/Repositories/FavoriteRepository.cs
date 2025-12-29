@@ -1,3 +1,4 @@
+using AbySalto.Mid.Application.Common.Exceptions;
 using AbySalto.Mid.Application.Favorites;
 using AbySalto.Mid.Domain.Entities;
 using AbySalto.Mid.Infrastructure.Persistence;
@@ -16,17 +17,30 @@ internal sealed class FavoriteRepository : IFavoriteRepository
 
     public async Task<Favorite> AddAsync(Favorite favorite, CancellationToken cancellation = default)
     {
-        await _context.Favorites.AddAsync(favorite);
-        await _context.SaveChangesAsync(cancellation);
-        return favorite;
+        await _context.Favorites.AddAsync(favorite, cancellation);
+        try
+        {
+            await _context.SaveChangesAsync(cancellation);
+            return favorite;
+        }
+        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        {
+            throw new ConflictException($"Favorite for product {favorite.ProductId} already exists.");
+        }
+
     }
 
-    public async Task<IEnumerable<Favorite>> GetByUserIdAsync(int userId, CancellationToken cancellation = default)
+    public async Task<Favorite?> GetByUserIdAndProductIdAsync(int userId, int productId, CancellationToken cancellation = default)
     {
         return await _context.Favorites
-            .AsNoTracking()
-            .Where(f => f.UserId == userId)
-            .OrderByDescending(f => f.AddedAt)
-            .ToListAsync(cancellation);
+           .AsNoTracking()
+           .FirstOrDefaultAsync(f => f.UserId == userId && f.ProductId == productId, cancellation);
+    }
+
+    private static bool IsUniqueConstraintViolation(DbUpdateException ex)
+    {
+        var msg = ex.InnerException?.Message ?? ex.Message;
+        return msg.Contains("duplicate key", StringComparison.OrdinalIgnoreCase)
+            || msg.Contains("unique constraint", StringComparison.OrdinalIgnoreCase);
     }
 }

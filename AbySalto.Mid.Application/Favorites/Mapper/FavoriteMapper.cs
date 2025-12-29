@@ -4,14 +4,14 @@ namespace AbySalto.Mid.Application.Favorites.Mapper;
 
 public static class FavoriteMapper
 {
-    public static FavoriteDto ToDto(this Favorite favorite)
+    public static FavoriteDto ToDto(this Favorite favorite, string userName)
     {
         if (favorite is null)
             return null!;
 
         return new FavoriteDto(
             favorite.Id,
-            favorite.UserId,
+            userName,
             favorite.ProductId,
             favorite.Title,
             favorite.Price,

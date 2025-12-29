@@ -2,7 +2,7 @@ namespace AbySalto.Mid.Application.Favorites;
 
 public sealed record FavoriteDto(
     int Id,
-    int UserId,
+    string Username,
     int ProductId,
     string Title,
     decimal Price,

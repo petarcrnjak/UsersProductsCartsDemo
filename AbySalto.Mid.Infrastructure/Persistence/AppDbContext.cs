@@ -1,4 +1,5 @@
 using AbySalto.Mid.Domain.Entities;
+using AbySalto.Mid.Infrastructure.Persistence.Configuration;
 using AbySalto.Mid.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 

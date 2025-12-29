@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AbySalto.Mid.Infrastructure.Persistence.Configurations;
 
-internal sealed class FavoriteConfiguration : IEntityTypeConfiguration<Favorite>
+public sealed class FavoriteConfiguration : IEntityTypeConfiguration<Favorite>
 {
     public void Configure(EntityTypeBuilder<Favorite> builder)
     {
@@ -20,7 +20,9 @@ internal sealed class FavoriteConfiguration : IEntityTypeConfiguration<Favorite>
         builder.Property(f => f.AddedAt)
                .IsRequired();
 
-        builder.HasIndex(f => f.UserId);
+        // Composite unique index to prevent duplicate favorites per user/product
+        builder.HasIndex(f => new { f.UserId, f.ProductId })
+               .IsUnique();
 
         builder.HasOne(f => f.User)
                .WithMany(u => u.Favorites)

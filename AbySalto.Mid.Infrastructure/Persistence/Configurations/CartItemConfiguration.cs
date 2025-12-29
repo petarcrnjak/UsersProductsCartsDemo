@@ -2,9 +2,9 @@ using AbySalto.Mid.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AbySalto.Mid.Infrastructure.Persistence.Configurations;
+namespace AbySalto.Mid.Infrastructure.Persistence.Configuration;
 
-internal sealed class CartItemConfiguration : IEntityTypeConfiguration<CartItem>
+public sealed class CartItemConfiguration : IEntityTypeConfiguration<CartItem>
 {
     public void Configure(EntityTypeBuilder<CartItem> builder)
     {

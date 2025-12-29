@@ -4,12 +4,12 @@ namespace AbySalto.Mid.Application.Carts.Mapper;
 
 public static class CartMapper
 {
-    public static CartDto ToDto(this Cart cart, string username)
+    public static CartDto ToDto(this Cart cart, string userName)
     {
         var items = cart.CartItems.Select(ToDto).ToList();
 
         return new CartDto(
-            username,
+            userName,
             items,
             cart.CreatedAt
         );
