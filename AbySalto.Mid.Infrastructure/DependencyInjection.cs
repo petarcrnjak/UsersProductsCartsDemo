@@ -27,6 +27,8 @@ namespace AbySalto.Mid.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddMemoryCache();
+
             services.AddDatabase(configuration);
             services.AddJwtAuthentication(configuration);
             services.AddServices(configuration);
@@ -38,6 +40,7 @@ namespace AbySalto.Mid.Infrastructure
         {
             // Bind config
             services.Configure<ExternalApisSettings>(configuration.GetSection(ExternalApisSettings.SectionName));
+            services.Configure<CacheSettings>(configuration.GetSection(CacheSettings.SectionName));
 
             services.AddSingleton(new JsonSerializerOptions
             {

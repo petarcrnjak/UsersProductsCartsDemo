@@ -45,7 +45,6 @@ public sealed class CartService : ICartService
 
         CartValidator.ValidateQuantity(command);
 
-        // Validate product exists
         var product = await _productService.GetProductByIdAsync(command.ProductId)
                 ?? throw new NotFoundException($"Product with id {command.ProductId} not found.");
 
