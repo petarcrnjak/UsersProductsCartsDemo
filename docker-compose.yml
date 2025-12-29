@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: abysalto_sql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Your_password123
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Your_password123", "-Q", "SELECT 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+  webapi:
+    build:
+      context: .
+      dockerfile: AbySalto.Mid/Dockerfile
+    container_name: abysalto_api
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ExternalApis__BaseUrl=https://dummyjson.com
+      # Connection string for EF Core (infrastructure reads GetConnectionString("DefaultConnection"))
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=AbySaltoMid;User Id=sa;Password=Your_password123;TrustServerCertificate=True
+      # JWT settings
+      - Jwt__Secret=YourSuperSecretKeyThatIsAtLeast32CharactersLongForHS256!
+      - Jwt__Issuer=AbySalto
+      - Jwt__Audience=AbySaltoUsers
+    ports:
+      - "8080:8080"
+
+volumes:
+  mssql_data:
